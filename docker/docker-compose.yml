@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  rabbitmq:
+    image: rabbitmq
+    ports: 
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"  
+    labels:
+      NAME: "rabbitmq1"
+    volumes:
+      - "./enabled_plugins:/etc/rabbitmq/enabled_plugins"
+  
+  jupyter:
+    image: jupyter/pyspark-notebook
+    ports:
+      - "8888:8888"
+    labels:
+      NAME: "jupyter"
+    volumes:
+      - "/code:/home/jovyan/work"  
+  
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password@2019"
+
+networks:
+  default:
+    external:
+      name: back-tier      
